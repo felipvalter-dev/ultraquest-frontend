@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="UltraQuest Core Engine")
 
-# Permite que a sua futura página web converse com o servidor sem bloqueios de segurança
+# Libera o acesso para o teu front-end comunicar com a API sem bloqueios de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -68,3 +68,15 @@ async def concluir_tarefa(tarefa: TarefaConcluida):
 @app.get("/status")
 async def obter_status():
     return ESTADO_JOGADOR
+
+# NOVA ROTA: Limpa e reinicia o estado do jogador na nuvem
+@app.post("/status/reset")
+async def resetar_status():
+    global ESTADO_JOGADOR
+    ESTADO_JOGADOR = {
+        "rank": "DESTRUCTIVE",
+        "multiplicador": 1.0,
+        "pontos_totais": 0,
+        "ultima_atividade": datetime.now()
+    }
+    return {"mensagem": "SISTEMA REINICIADO", "estado": ESTADO_JOGADOR}
